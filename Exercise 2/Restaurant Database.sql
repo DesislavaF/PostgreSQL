@@ -35,3 +35,20 @@ insert into customers (name, phone) values
 ('Dimitar Bandgev', '0893636927'),
 ('Monika Mihova', '0876003203');
 
+
+insert into orders (customer_id, item_id, order_data, quantity) values 
+(1, 1, '2025-01-19', 2), 
+(1, 2, '2025-01-20', 1), 
+(2, 3, '2025-01-02', 1), 
+(3, 4, '2025-01-03', 3); 
+
+
+SELECT * FROM customers;
+
+SELECT * FROM customers WHERE name = 'Desislava Filipova';
+
+SELECT o.id AS order_id, o.order_data, m.name AS item_name, o.quantity, m.price
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+JOIN menu m ON o.item_id = m.id
+WHERE c.name = 'Desislava Filipova';
