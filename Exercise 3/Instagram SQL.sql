@@ -181,3 +181,50 @@ SELECT c.id AS comment_id, r.image AS reaction
 FROM comment_reaction cr
 JOIN reaction r ON cr.reaction_id = r.id
 JOIN comment c ON cr.comment_id = c.id;
+
+
+
+ALTER TABLE post 
+ADD COLUMN adds_budget INT,
+ADD COLUMN is_story BOOLEAN,
+ADD COLUMN expire_at DATE;
+
+CREATE TABLE share (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    shared_by BIGINT NOT NULL,
+    post_id BIGINT NOT NULL,
+    description VARCHAR(250),
+    FOREIGN KEY (shared_by) REFERENCES "user"(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE
+);
+
+ALTER TABLE comment 
+ADD COLUMN adds_budget INT;
+
+INSERT INTO share (shared_by, post_id, description) VALUES
+(1, 17, 'Check this out!'),
+(2, 18, 'Interesting post!'),
+(3, 19, 'Sharing this for later.'),
+(4, 20, 'Must read!');
+
+
+ALTER TABLE comment
+ADD COLUMN commented_by BIGINT;
+
+
+UPDATE comment 
+SET commented_by = 1
+WHERE commented_by IS NULL;
+
+ALTER TABLE comment 
+ALTER COLUMN commented_by SET NOT NULL;
+
+ALTER TABLE comment 
+ADD FOREIGN KEY (commented_by) REFERENCES "user"(id) ON DELETE CASCADE;
+
+INSERT INTO comment (post_id, comment_id, commented_by, text) VALUES
+(17, NULL, 1, 'First comment'),
+(17, NULL, 2, 'Second comment'),
+(18, NULL, 3, 'Another comment'),
+(19, NULL, 4, 'General comment');
+
